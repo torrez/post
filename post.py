@@ -6,6 +6,8 @@ import sqlite3
 import os
 import sys
 from datetime import datetime
+import re
+import urlify
 
 #
 # Try to open the database. If you don’t find one then you should ask the user
@@ -63,7 +65,10 @@ with tempfile.NamedTemporaryFile(suffix='task') as temp:
     body = open(temp.name, 'r').read()
 
 if body != "":
-    title = raw_input("Please pick a title (You can leave this blank): ")
+    while True:
+        title = raw_input("Please pick a title: ")
+        if title != "":
+            break;
 
     cursor.execute("""INSERT INTO posts (title, body, status, created_at)
                     VALUES (?, ?, 0, ?)""", (title, body, datetime.now()))
@@ -79,6 +84,27 @@ if body != "":
     if wants_to_publish == 'y' or wants_to_publish == '':
         cursor.execute("""UPDATE posts SET status = ? WHERE rowid = ?""", 
                         (PUBLISHED, cursor.lastrowid))
+
+        cursor.execute("""SELECT title, body, status, created_at FROM posts WHERE status = ? ORDER BY created_at desc LIMIT 10""", (PUBLISHED,))
+        rows = cursor.fetchall()
+
+        index_html = ""
+
+        #write individual files
+        for row in rows:
+            slug = urlify.urlify(row[0])
+            post_file_name = "{0}.html".format(slug)
+            with open("{0}{1}".format(public_html_path, post_file_name), 'w') as f:
+                f.write(row[1])
+
+            index_html = index_html + "<br>" + "<h1>" + row[0] + "</h1><p>" +  row[1].replace("\n", "<br>") + "</p>"
+
+        #write the index
+        with open("{0}{1}".format(public_html_path, "index.html"), 'w') as f:
+            f.write(index_html)
+
+
+
 
 else:
     print("Okay.")
