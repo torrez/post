@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# coding:UTF-8
 
 import tempfile, subprocess
 import sqlite3
@@ -63,11 +64,11 @@ else:
 
 with tempfile.NamedTemporaryFile(suffix='task') as temp:
     subprocess.call(['vim', temp.name])
-    body = open(temp.name, 'r').read()
+    body = open(temp.name, 'r').read().decode('utf-8')
 
 if body != "":
     while True:
-        title = raw_input("Please pick a title: ")
+        title = raw_input("Please pick a title: ").decode('utf-8')
         if title != "":
             break;
 
@@ -93,16 +94,16 @@ if body != "":
 
         #write individual files
         for row in rows:
-            slug = urlify.urlify(row[0])
+            slug = urlify.urlify(row[0].encode('utf-8'))
             post_file_name = "{0}.html".format(slug)
             with open("{0}{1}".format(public_html_path, post_file_name), 'w') as f:
-                f.write(row[1])
+                f.write(row[1].encode('utf-8'))
 
             index_html = index_html + "<br>" + "<h1>" + row[0] + "</h1><p>" +  row[1].replace("\n", "<br>") + "</p>"
 
         #write the index
         with open("{0}{1}".format(public_html_path, "index.html"), 'w') as f:
-            f.write(index_html)
+            f.write(index_html.encode('utf-8'))
 
 else:
     print("Okay.")
