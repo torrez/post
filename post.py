@@ -10,8 +10,9 @@ import re
 import urlify
 
 #
-# Try to open the database. If you don’t find one then you should ask the user
-# if they want to set up a posting database.
+# This script is ridiculous. I have never been so careless and messy. I just
+# wanted to make something quick and then refine it. 
+# Ridiculous.
 #
 
 DRAFT = 0
@@ -102,9 +103,6 @@ if body != "":
         #write the index
         with open("{0}{1}".format(public_html_path, "index.html"), 'w') as f:
             f.write(index_html)
-
-
-
 
 else:
     print("Okay.")
