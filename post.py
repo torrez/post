@@ -97,13 +97,25 @@ if body != "":
             slug = urlify.urlify(row[0].encode('utf-8'))
             post_file_name = "{0}.html".format(slug)
             with open("{0}{1}".format(public_html_path, post_file_name), 'w') as f:
+                f.write("<h1>{0}</h1>\n".format(row[0].encode('utf-8')) )
                 f.write(row[1].encode('utf-8'))
 
             index_html = index_html + "<br>" + "<h1>" + row[0] + "</h1><p>" +  row[1].replace("\n", "<br>") + "</p>"
 
         #write the index
         with open("{0}{1}".format(public_html_path, "index.html"), 'w') as f:
+            f.write("""
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <title>
+                BLOG
+                </title>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                </head>
+                <body>""")
             f.write(index_html.encode('utf-8'))
+            f.write("</body></html>")
 
 else:
     print("Okay.")
